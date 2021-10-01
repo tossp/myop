@@ -31,9 +31,8 @@ on:
         description: '重新FORK上游仓库'
         required: false
         default: 'false'
-
- schedule:
-   - cron: 10 4 * * *
+  schedule:
+    - cron: 10 4 * * *
 
 env:
   OLDER_WORKFLOW: true
