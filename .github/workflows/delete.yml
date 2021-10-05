@@ -62,13 +62,13 @@ jobs:
         token: ${{ github.token }}
         repository: ${{ github.repository }}
         retain_days: 0.5
-        keep_minimum_runs: 3
+        keep_minimum_runs: 10
 
     - name: 删除releases,可设置保留数
       if: env.OLDER_RELEASES == 'true' || (github.event.inputs.older-releases == 'true')
       uses: dev-drprasad/delete-older-releases@master
       with:
-        keep_latest: 3         # 保留多少个发布不删除
+        keep_latest: 10         # 保留多少个发布不删除
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
