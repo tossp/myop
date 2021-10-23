@@ -21,11 +21,11 @@ on:
 
 
 # 定时触发开始编译(把下面两个#去掉开启,时间设置请看定时编译说明)
-  schedule:
-   - cron: 0 16 */2 * *
+  # schedule:
+  #  - cron: 0 16 */2 * *
 
 
-env: 
+env:
  REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
  TZ: Asia/Shanghai
 
@@ -81,7 +81,7 @@ jobs:
         fi
         echo "NETIP=package/base-files/files/etc/networkip" >> $GITHUB_ENV
         echo "DELETE=package/base-files/files/etc/deletefile" >> $GITHUB_ENV
-        
+
     - name: 部署编译环境
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -91,9 +91,9 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --global user.email "tossp+github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
-    
+
     - name: 下载"${{matrix.target}}"源码
       working-directory: /workdir
       run: |
@@ -103,7 +103,7 @@ jobs:
         ./scripts/feeds update -a > /dev/null 2>&1
         echo "Home=${GITHUB_WORKSPACE}/openwrt" >> $GITHUB_ENV
         echo "PATH1=${GITHUB_WORKSPACE}/openwrt/build/${{matrix.target}}" >> $GITHUB_ENV
- 
+
     - name: 加载源,补丁和自定义设置
       run: |
         cp -Rf `find ./ -maxdepth 1 -type d ! -path './openwrt' ! -path './'` openwrt
@@ -124,7 +124,7 @@ jobs:
         ./scripts/feeds update -a > /dev/null 2>&1
         ./scripts/feeds install -a > /dev/null 2>&1
         [[ -e "$PATH1/$CONFIG_FILE" ]] && mv "$PATH1/$CONFIG_FILE" .config
-        
+
     - name: SSH远程连接（制作.config配置文件）
       if: env.SSH_ACTIONS == 'true' || (github.event.inputs.ssh == 'ssh')
       uses: danshui-git/debugger-action@master
@@ -153,14 +153,14 @@ jobs:
         else
           echo "TARGET_PROFILE=armvirt" >> $GITHUB_ENV
         fi
-        
+
     - name: 上传.config配置文件在 github actions
       if: env.UPLOAD_CONFIG == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: .config_${{ env.CODE }}_${{ env.TARGET_PROFILE }}_${{ env.Compile_Date }}
         path: config.txt
-        
+
     - name: 触发compile.yml启动"${{matrix.target}}"编译
       if: steps.compile.outputs.status == 'success' && env.REPO_TOKEN
       run: |
