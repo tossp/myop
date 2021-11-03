@@ -271,7 +271,7 @@ jobs:
         mv build/${{matrix.target}}/${CONFIG_FILE} build/${{matrix.target}}/new_${CONFIG_FILE}
         curl -fsSL https://raw.githubusercontent.com/${{github.repository}}/main/build/${{matrix.target}}/${CONFIG_FILE} > build/${{matrix.target}}/${CONFIG_FILE}
         curl -fsSL https://raw.githubusercontent.com/${{github.repository}}/main/.github/workflows/build-openwrt.yml > .github/workflows/build-openwrt.yml
-        sed -i -e "s/build-essential/build-essential ccache/g" .github/workflows/compile.yml
+        sed -i -e "s/build-essential/build-essential ccache cmake/g" .github/workflows/compile.yml
         # ts END
         git add .
         git commit -m "编译${{env.CODE}}-${{env.TARGET_PROFILE}}固件"
